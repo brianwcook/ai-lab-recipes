@@ -64,6 +64,12 @@ spec:
       workspaces:
       - name: workspace
         workspace: workspace
+    matrix:
+      params:
+      - name: build-args
+        value:
+        - ["platform=linux/arm64"]
+        - [""platform=linux/amd64"]
     params:
     - description: Source Repository URL
       name: git-url
@@ -117,12 +123,6 @@ spec:
     #  description: Array of --build-arg values ("arg=value" strings) for buildah
     #  name: build-args
     #  type: array
-    matrix:
-      params:
-      - name: build-args
-        value:
-        - ["platform=linux/arm64"]
-        - ["platform=linux/amd64"]
     - default: ""
       description: Path to a file with build arguments for buildah, see https://www.mankier.com/1/buildah-build#--build-arg-file
       name: build-args-file
