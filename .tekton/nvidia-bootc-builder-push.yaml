@@ -122,7 +122,7 @@ spec:
       - name: build-args
         value:
         - ["platform=linux/arm64"]
-        - [""platform=linux/amd64"]
+        - ["platform=linux/amd64"]
     - default: ""
       description: Path to a file with build arguments for buildah, see https://www.mankier.com/1/buildah-build#--build-arg-file
       name: build-args-file
