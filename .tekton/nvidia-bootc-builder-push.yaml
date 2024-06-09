@@ -86,9 +86,9 @@ spec:
       name: build-args-file
       type: string
     results:
-    - description: ""
-      name: IMAGE_URL
-      value: $(tasks.build-container.results.IMAGE_URL)
+    # - description: ""
+    #   name: IMAGE_URL
+    #   value: $(tasks.build-container.results.IMAGE_URL)
     #- description: ""
     #  name: IMAGE_DIGEST
     #  value: $(tasks.build-container.results.IMAGE_DIGEST)
@@ -98,9 +98,9 @@ spec:
     - description: ""
       name: CHAINS-GIT_COMMIT
       value: $(tasks.clone-repository.results.commit)
-    - description: ""
-      name: JAVA_COMMUNITY_DEPENDENCIES
-      value: $(tasks.build-container.results.JAVA_COMMUNITY_DEPENDENCIES)
+    # - description: ""
+    #   name: JAVA_COMMUNITY_DEPENDENCIES
+    #   value: $(tasks.build-container.results.JAVA_COMMUNITY_DEPENDENCIES)
     tasks:
     - name: init
       params:
@@ -205,7 +205,7 @@ spec:
           resolver: git
           params:
             - name: url
-              value: https://github.com/konflux-ci/build-definitions.git
+              value: https://github.com/brianwcook/build-definitions.git
             - name: revision
               value: add-build-conainer-pull-spec-result
             - name: pathInRepo
