@@ -177,8 +177,11 @@ spec:
         params:
         - name: BUILD_ARGS
           value:
-            - ["platform=linux/arm64"]
-            - ["platform=linux/amd64"]
+            - chrome
+            - safari
+            - firefox
+            #- ["platform=linux/arm64"]
+            #- ["platform=linux/amd64"]
       params:
       - name: IMAGE
         value: $(params.output-image)
