@@ -206,73 +206,99 @@ spec:
       - name: git-basic-auth
         workspace: git-auth
 
-    - name: build-container
-      matrix:
-        params:
-        - name: BUILD_ARGS
-          value:
-          - ["platform=linux/arm64"]
-          - ["platform=linux/amd64"]
-      params:
-      - name: IMAGE
-        value: $(params.output-image)
-      - name: DOCKERFILE
-        value: $(params.dockerfile)
-      - name: CONTEXT
-        value: $(params.path-context)
-      - name: HERMETIC
-        value: $(params.hermetic)
-      - name: PREFETCH_INPUT
-        value: $(params.prefetch-input)
-      - name: IMAGE_EXPIRES_AFTER
-        value: $(params.image-expires-after)
-      - name: COMMIT_SHA
-        value: $(tasks.clone-repository.results.commit)
-      #- name: BUILD_ARGS
-      #  value:
-      #  - $(params.build-args[*])
-      - name: BUILD_ARGS_FILE
-        value: $(params.build-args-file)
-      runAfter:
-      - prefetch-dependencies
-      taskRef:
-          resolver: git
-          params:
-            - name: url
-              value: https://github.com/konflux-ci/build-definitions.git
-            - name: revision
-              value: add-build-conainer-pull-spec-result
-            - name: pathInRepo
-              value: task/buildah/0.1/buildah.yaml
-      when:
-      - input: $(tasks.init.results.build)
-        operator: in
-        values:
-        - "true"
-      workspaces:
-      - name: source
-        workspace: workspace
 
-    - name: build-index-image
-      params:
+    - name: matrix-emitting-results
+        matrix:
+          params:
+            - name: platform
+              value:
+                - linux
+                - mac
+                - windows
+            - name: browser
+              value:
+                - chrome
+                - safari
+                - firefox
+        taskRef:
+          name: taskwithresults
+          kind: Task
+      - name: task-consuming-results
+        taskRef:
+          name: echoarrayurl
+          kind: Task
+        params:
+          - name: url
+            value: $(tasks.matrix-emitting-results.results.report-url[*])
+
+
+    - name: build-container
+        matrix:
+          params:
+          - name: BUILD_ARGS
+            value:
+            - ["platform=linux/arm64"]
+            - ["platform=linux/amd64"]
+        params:
+        - name: IMAGE
+          value: $(params.output-image)
+        - name: DOCKERFILE
+          value: $(params.dockerfile)
+        - name: CONTEXT
+          value: $(params.path-context)
+        - name: HERMETIC
+          value: $(params.hermetic)
+        - name: PREFETCH_INPUT
+          value: $(params.prefetch-input)
+        - name: IMAGE_EXPIRES_AFTER
+          value: $(params.image-expires-after)
+        - name: COMMIT_SHA
+          value: $(tasks.clone-repository.results.commit)
+        #- name: BUILD_ARGS
+        #  value:
+        #  - $(params.build-args[*])
+        - name: BUILD_ARGS_FILE
+          value: $(params.build-args-file)
+        runAfter:
+        - prefetch-dependencies
+        taskRef:
+            resolver: git
+            params:
+              - name: url
+                value: https://github.com/konflux-ci/build-definitions.git
+              - name: revision
+                value: add-build-conainer-pull-spec-result
+              - name: pathInRepo
+                value: task/buildah/0.1/buildah.yaml
+        when:
+        - input: $(tasks.init.results.build)
+          operator: in
+          values:
+          - "true"
+        workspaces:
+        - name: source
+          workspace: workspace
+  
+      - name: build-index-image
+        params:
           - name: IMAGE
             value: $(params.output-image)
           - name: COMMIT_SHA
             value: $(tasks.clone-repository.results.commit)
           - name: IMAGES
-            value:
-              $(tasks.build-container.results.IMAGE_PULL_SPEC[*])
-      runAfter:
-        build-container[*]
-      taskRef:
-          resolver: git
-          params:
-            - name: url
-              value: https://github.com/konflux-ci/build-definitions.git
-            - name: revision
-              value: main
-            - name: pathInRepo
-              value: task/build-image-manifest/0.1/build-image-manifest.yaml
+            value: $(tasks.build-container.results.IMAGE_PULL_SPEC[*])
+            # value: $(tasks.matrix-emitting-results.results.report-url[*])
+        runAfter:
+          build-container[*]
+        taskRef:
+            resolver: git
+            params:
+              - name: url
+                value: https://github.com/konflux-ci/build-definitions.git
+              - name: revision
+                value: main
+              - name: pathInRepo
+                value: task/build-image-manifest/0.1/build-image-manifest.yaml
 
     # TODO this also needs to be matrixed
     #- name: build-source-image
