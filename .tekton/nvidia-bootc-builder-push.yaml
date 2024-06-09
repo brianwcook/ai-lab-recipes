@@ -207,6 +207,7 @@ spec:
         workspace: workspace
       - name: git-basic-auth
         workspace: git-auth
+
     - name: build-container
       matrix:
         params:
@@ -237,14 +238,14 @@ spec:
       runAfter:
       - prefetch-dependencies
       taskRef:
-        params:
-        - name: name
-          value: buildah
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-buildah:0.1@sha256:0cb9100452e9640adbda75a6e23d2cc9c76d2408cbcf3183543b2a7582e39f02
-        - name: kind
-          value: task
-        resolver: bundles
+          resolver: git
+          params:
+            - name: url
+              value: https://github.com/konflux-ci/build-definitions.git
+            - name: revision
+              value: add-build-conainer-pull-spec-result
+            - name: pathInRepo
+              value: task/buildah/0.1/buildah.yaml
       when:
       - input: $(tasks.init.results.build)
         operator: in
@@ -253,6 +254,28 @@ spec:
       workspaces:
       - name: source
         workspace: workspace
+
+    - name: build-index-image
+      params:
+          - name: IMAGE
+            value: $(params.output-image)
+          - name: COMMIT_SHA
+            value: $(tasks.clone-repository.results.commit)
+          - name: IMAGES
+            value:
+              $(tasks.build-container.results.IMAGE_PULL_SPEC[*])
+      runAfter:
+        - build-container
+      taskRef:
+          resolver: git
+          params:
+            - name: url
+              value: https://github.com/konflux-ci/build-definitions.git
+            - name: revision
+              value: main
+            - name: pathInRepo
+              value: task/build-image-manifest/0.1/build-image-manifest.yaml
+
     - name: build-source-image
       params:
       - name: BINARY_IMAGE
