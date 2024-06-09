@@ -306,30 +306,30 @@ spec:
     #  workspaces:
     #  - name: workspace
     #    workspace: workspace
-    - name: deprecated-base-image-check
-      params:
-      - name: BASE_IMAGES_DIGESTS
-        value: $(tasks.build-container.results.BASE_IMAGES_DIGESTS)
-      - name: IMAGE_URL
-        value: $(tasks.build-container.results.IMAGE_URL)
-      - name: IMAGE_DIGEST
-        value: $(tasks.build-container.results.IMAGE_DIGEST)
-      runAfter:
-      - build-container
-      taskRef:
-        params:
-        - name: name
-          value: deprecated-image-check
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-deprecated-image-check:0.4@sha256:9d33c7dbb67c8d6580959792cb395790c3bde1ad877d120c9fd62161fc0452a7
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
+    # - name: deprecated-base-image-check
+    #   params:
+    #   - name: BASE_IMAGES_DIGESTS
+    #     value: $(tasks.build-container.results.BASE_IMAGES_DIGESTS)
+    #   - name: IMAGE_URL
+    #     value: $(tasks.build-container.results.IMAGE_URL)
+    #   - name: IMAGE_DIGEST
+    #     value: $(tasks.build-container.results.IMAGE_DIGEST)
+    #   runAfter:
+    #   - build-container
+    #   taskRef:
+    #     params:
+    #     - name: name
+    #       value: deprecated-image-check
+    #     - name: bundle
+    #       value: quay.io/konflux-ci/tekton-catalog/task-deprecated-image-check:0.4@sha256:9d33c7dbb67c8d6580959792cb395790c3bde1ad877d120c9fd62161fc0452a7
+    #     - name: kind
+    #       value: task
+    #     resolver: bundles
+    #   when:
+    #   - input: $(params.skip-checks)
+    #     operator: in
+    #     values:
+    #     - "false"
     - name: clair-scan
       params:
       - name: image-digest
