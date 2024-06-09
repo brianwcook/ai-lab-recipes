@@ -206,13 +206,14 @@ spec:
       - name: git-basic-auth
         workspace: git-auth
 
+
     - name: build-container
         matrix:
           params:
           - name: BUILD_ARGS
             value:
-            - ["platform=linux/arm64"]
-            - ["platform=linux/amd64"]
+              - ["platform=linux/arm64"]
+              - ["platform=linux/amd64"]
         params:
         - name: IMAGE
           value: $(params.output-image)
@@ -253,6 +254,8 @@ spec:
         - name: source
           workspace: workspace
   
+
+  
       - name: build-index-image
         params:
           - name: IMAGE
@@ -263,7 +266,7 @@ spec:
             value: $(tasks.build-container.results.IMAGE_PULL_SPEC[*])
             # value: $(tasks.matrix-emitting-results.results.report-url[*])
         runAfter:
-          build-container[*]
+          build-container
         taskRef:
             resolver: git
             params:
