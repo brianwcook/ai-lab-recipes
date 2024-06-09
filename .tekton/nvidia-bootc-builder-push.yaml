@@ -263,7 +263,7 @@ spec:
             value:
               $(tasks.build-container.results.IMAGE_PULL_SPEC[*])
       runAfter:
-        - build-container
+        build-container[*]
       taskRef:
           resolver: git
           params:
