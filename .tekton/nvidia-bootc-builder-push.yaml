@@ -175,12 +175,10 @@ spec:
     - name: build-container
       matrix:
         params:
-        - name: BUILD_ARGS
-          value:
-            - ["chrome"]
-            - ["safari"]
-            #- ["platform=linux/arm64"]
-            #- ["platform=linux/amd64"]
+          - name: BUILD_ARGS
+            value:
+            - ["platform=linux/arm64"]
+            - ["platform=linux/amd64"]
       params:
       - name: IMAGE
         value: $(params.output-image)
