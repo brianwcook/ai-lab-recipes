@@ -176,6 +176,7 @@ spec:
       matrix:
         params:
         - name: BUILD_ARGS
+          type: array
           value:
           - ["platform=linux/arm64"]
           - ["platform=linux/amd64"]
