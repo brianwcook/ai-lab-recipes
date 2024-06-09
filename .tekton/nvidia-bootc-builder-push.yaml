@@ -276,35 +276,36 @@ spec:
             - name: pathInRepo
               value: task/build-image-manifest/0.1/build-image-manifest.yaml
 
-    - name: build-source-image
-      params:
-      - name: BINARY_IMAGE
-        value: $(params.output-image)
-      - name: BASE_IMAGES
-        value: $(tasks.build-container.results.BASE_IMAGES_DIGESTS)
-      runAfter:
-      - build-container
-      taskRef:
-        params:
-        - name: name
-          value: source-build
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-source-build:0.1@sha256:eacb3f49a4fefc112e5d68f67f9418584e1f942e33b027aaf80612d7eff332d0
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(tasks.init.results.build)
-        operator: in
-        values:
-        - "true"
-      - input: $(params.build-source-image)
-        operator: in
-        values:
-        - "true"
-      workspaces:
-      - name: workspace
-        workspace: workspace
+    # TODO this also needs to be matrixed
+    #- name: build-source-image
+    #  params:
+    #  - name: BINARY_IMAGE
+    #    value: $(params.output-image)
+    #  - name: BASE_IMAGES
+    #    value: $(tasks.build-container.results.BASE_IMAGES_DIGESTS)
+    #  runAfter:
+    #  - build-container
+    #  taskRef:
+    #    params:
+    #    - name: name
+    #      value: source-build
+    #    - name: bundle
+    #      value: quay.io/konflux-ci/tekton-catalog/task-source-build:0.1@sha256:eacb3f49a4fefc112e5d68f67f9418584e1f942e33b027aaf80612d7eff332d0
+    #    - name: kind
+    #      value: task
+    #    resolver: bundles
+    #  when:
+    #  - input: $(tasks.init.results.build)
+    #    operator: in
+    #    values:
+    #    - "true"
+    #  - input: $(params.build-source-image)
+    #    operator: in
+    #    values:
+    #    - "true"
+    #  workspaces:
+    #  - name: workspace
+    #    workspace: workspace
     - name: deprecated-base-image-check
       params:
       - name: BASE_IMAGES_DIGESTS
