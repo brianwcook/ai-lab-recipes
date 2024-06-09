@@ -254,26 +254,26 @@ spec:
   
 
 
-      # - name: build-index-image
-      #   params:
-      #     - name: IMAGE
-      #       value: $(params.output-image)
-      #     - name: COMMIT_SHA
-      #       value: $(tasks.clone-repository.results.commit)
-      #     - name: IMAGES
-      #       value: $(tasks.build-container.results.IMAGE_PULL_SPEC[*])
-      #       # value: $(tasks.matrix-emitting-results.results.report-url[*])
-      #   runAfter:
-      #     build-container
-      #   taskRef:
-      #       resolver: git
-      #       params:
-      #         - name: url
-      #           value: https://github.com/konflux-ci/build-definitions.git
-      #         - name: revision
-      #           value: main
-      #         - name: pathInRepo
-      #           value: task/build-image-manifest/0.1/build-image-manifest.yaml
+      - name: build-index-image
+        params:
+          - name: IMAGE
+            value: $(params.output-image)
+          - name: COMMIT_SHA
+            value: $(tasks.clone-repository.results.commit)
+          - name: IMAGES
+            value: $(tasks.build-container.results.IMAGE_PULL_SPEC[*])
+            # value: $(tasks.matrix-emitting-results.results.report-url[*])
+        runAfter:
+          build-container
+        taskRef:
+            resolver: git
+            params:
+              - name: url
+                value: https://github.com/konflux-ci/build-definitions.git
+              - name: revision
+                value: main
+              - name: pathInRepo
+                value: task/build-image-manifest/0.1/build-image-manifest.yaml
 
     # TODO this also needs to be matrixed
     #- name: build-source-image
