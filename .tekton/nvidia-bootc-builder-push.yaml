@@ -32,7 +32,7 @@ spec:
     - name: show-sbom
       params:
       - name: IMAGE_URL
-        value: $(tasks.build-container.results.IMAGE_URL)
+        value: $(tasks.build-index-image.results.IMAGE_URL)
       taskRef:
         params:
         - name: name
@@ -51,7 +51,7 @@ spec:
       - name: image-url
         value: $(params.output-image)
       - name: build-task-status
-        value: $(tasks.build-container.status)
+        value: $(tasks.build-index-image.status)
       taskRef:
         params:
         - name: name
@@ -124,19 +124,17 @@ spec:
     results:
     - description: ""
       name: IMAGE_URL
-      value: $(tasks.build-container.results.IMAGE_URL)
+      value: $(tasks.build-index-image.results.IMAGE_URL)
     - description: ""
       name: IMAGE_DIGEST
-      value: $(tasks.build-container.results.IMAGE_DIGEST)
+      value: $(tasks.build-index-image.results.IMAGE_DIGEST)
     - description: ""
       name: CHAINS-GIT_URL
       value: $(tasks.clone-repository.results.url)
     - description: ""
       name: CHAINS-GIT_COMMIT
       value: $(tasks.clone-repository.results.commit)
-    - description: ""
-      name: JAVA_COMMUNITY_DEPENDENCIES
-      value: $(tasks.build-container.results.JAVA_COMMUNITY_DEPENDENCIES)
+      
     tasks:
     - name: init
       params:
@@ -333,11 +331,11 @@ spec:
     - name: clair-scan
       params:
       - name: image-digest
-        value: $(tasks.build-container.results.IMAGE_DIGEST)
+        value: $(tasks.build-index-image.results.IMAGE_DIGEST)
       - name: image-url
-        value: $(tasks.build-container.results.IMAGE_URL)
+        value: $(tasks.build-index-image.results.IMAGE_URL)
       runAfter:
-      - build-container
+      - build-index-image
       taskRef:
         params:
         - name: name
@@ -395,11 +393,11 @@ spec:
     - name: clamav-scan
       params:
       - name: image-digest
-        value: $(tasks.build-container.results.IMAGE_DIGEST)
+        value: $(tasks.build-index-image.results.IMAGE_DIGEST)
       - name: image-url
-        value: $(tasks.build-container.results.IMAGE_URL)
+        value: $(tasks.build-index-image.results.IMAGE_URL)
       runAfter:
-      - build-container
+      - build-index-image
       taskRef:
         params:
         - name: name
@@ -417,11 +415,11 @@ spec:
     - name: sbom-json-check
       params:
       - name: IMAGE_URL
-        value: $(tasks.build-container.results.IMAGE_URL)
+        value: $(tasks.build-index-image.results.IMAGE_URL)
       - name: IMAGE_DIGEST
-        value: $(tasks.build-container.results.IMAGE_DIGEST)
+        value: $(tasks.build-index-image.results.IMAGE_DIGEST)
       runAfter:
-      - build-container
+      - build-index-image
       taskRef:
         params:
         - name: name
@@ -439,9 +437,9 @@ spec:
     - name: apply-tags
       params:
       - name: IMAGE
-        value: $(tasks.build-container.results.IMAGE_URL)
+        value: $(tasks.build-index-image.results.IMAGE_URL)
       runAfter:
-      - build-container
+      - build-index-image
       taskRef:
         params:
         - name: name
