@@ -206,32 +206,6 @@ spec:
       - name: git-basic-auth
         workspace: git-auth
 
-
-    - name: matrix-emitting-results
-        matrix:
-          params:
-            - name: platform
-              value:
-                - linux
-                - mac
-                - windows
-            - name: browser
-              value:
-                - chrome
-                - safari
-                - firefox
-        taskRef:
-          name: taskwithresults
-          kind: Task
-      - name: task-consuming-results
-        taskRef:
-          name: echoarrayurl
-          kind: Task
-        params:
-          - name: url
-            value: $(tasks.matrix-emitting-results.results.report-url[*])
-
-
     - name: build-container
         matrix:
           params:
