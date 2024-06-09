@@ -27,6 +27,8 @@ spec:
     value: '{{revision}}'
   - name: build-args-file
     value: "training/nvidia-bootc/argsfile.conf"
+  - name: path-context
+    value: .
   pipelineRef:
     name: build-pipeline
   workspaces:
