@@ -134,7 +134,7 @@ spec:
     - description: ""
       name: CHAINS-GIT_COMMIT
       value: $(tasks.clone-repository.results.commit)
-      
+
     tasks:
     - name: init
       params:
@@ -353,9 +353,9 @@ spec:
     - name: ecosystem-cert-preflight-checks
       params:
       - name: image-url
-        value: $(tasks.build-container.results.IMAGE_URL)
+        value: $(tasks.build-index-image.results.IMAGE_URL)
       runAfter:
-      - build-container
+      - build-index-image
       taskRef:
         params:
         - name: name
