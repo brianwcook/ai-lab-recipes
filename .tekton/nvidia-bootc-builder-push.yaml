@@ -27,8 +27,6 @@ spec:
     value: '{{revision}}'
   - name: build-args-file
     value: "training/nvidia-bootc/argsfile.conf"
-  - name: build-args
-    value: ["platform=linux/arm64"]
   pipelineSpec:
     finally:
     - name: show-sbom
@@ -115,10 +113,16 @@ spec:
       description: Build a source image.
       name: build-source-image
       type: string
-    - default: []
-      description: Array of --build-arg values ("arg=value" strings) for buildah
-      name: build-args
-      type: array
+    #- default: []
+    #  description: Array of --build-arg values ("arg=value" strings) for buildah
+    #  name: build-args
+    #  type: array
+    matrix:
+      params:
+      - name: build-args
+        value:
+        - ["platform=linux/arm64"]
+        - [""platform=linux/amd64"]
     - default: ""
       description: Path to a file with build arguments for buildah, see https://www.mankier.com/1/buildah-build#--build-arg-file
       name: build-args-file
