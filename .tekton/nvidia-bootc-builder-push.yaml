@@ -177,9 +177,8 @@ spec:
         params:
         - name: BUILD_ARGS
           value:
-            - chrome
-            - safari
-            - firefox
+            - ["chrome"]
+            - ["safari"]
             #- ["platform=linux/arm64"]
             #- ["platform=linux/amd64"]
       params:
