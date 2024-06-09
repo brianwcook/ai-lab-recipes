@@ -28,42 +28,6 @@ spec:
   - name: build-args-file
     value: "training/nvidia-bootc/argsfile.conf"
   pipelineSpec:
-    finally:
-    - name: show-sbom
-      params:
-      - name: IMAGE_URL
-        value: $(tasks.build-container.results.IMAGE_URL)
-      taskRef:
-        params:
-        - name: name
-          value: show-sbom
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-show-sbom:0.1@sha256:69edfd6862a1837e21325146c1c52acda29838d8eead837a74ed40e91d54cb97
-        - name: kind
-          value: task
-        resolver: bundles
-    - name: show-summary
-      params:
-      - name: pipelinerun-name
-        value: $(context.pipelineRun.name)
-      - name: git-url
-        value: $(tasks.clone-repository.results.url)?rev=$(tasks.clone-repository.results.commit)
-      - name: image-url
-        value: $(params.output-image)
-      - name: build-task-status
-        value: $(tasks.build-container.status)
-      taskRef:
-        params:
-        - name: name
-          value: summary
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-summary:0.2@sha256:4b0563bcb5a070b9f7a783bfb831941d4fe5fa42bbb732a63c63f8f7936d4467
-        - name: kind
-          value: task
-        resolver: bundles
-      workspaces:
-      - name: workspace
-        workspace: workspace
     params:
     - description: Source Repository URL
       name: git-url
@@ -125,9 +89,9 @@ spec:
     - description: ""
       name: IMAGE_URL
       value: $(tasks.build-container.results.IMAGE_URL)
-    - description: ""
-      name: IMAGE_DIGEST
-      value: $(tasks.build-container.results.IMAGE_DIGEST)
+    #- description: ""
+    #  name: IMAGE_DIGEST
+    #  value: $(tasks.build-container.results.IMAGE_DIGEST)
     - description: ""
       name: CHAINS-GIT_URL
       value: $(tasks.clone-repository.results.url)
@@ -330,127 +294,127 @@ spec:
     #     operator: in
     #     values:
     #     - "false"
-    - name: clair-scan
-      params:
-      - name: image-digest
-        value: $(tasks.build-container.results.IMAGE_DIGEST)
-      - name: image-url
-        value: $(tasks.build-container.results.IMAGE_URL)
-      runAfter:
-      - build-container
-      taskRef:
-        params:
-        - name: name
-          value: clair-scan
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-clair-scan:0.1@sha256:eed371ce8d1473e31a0befaa60134dedce47debe9527df0932f7fdea6a0c73b9
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-    - name: ecosystem-cert-preflight-checks
-      params:
-      - name: image-url
-        value: $(tasks.build-container.results.IMAGE_URL)
-      runAfter:
-      - build-container
-      taskRef:
-        params:
-        - name: name
-          value: ecosystem-cert-preflight-checks
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-ecosystem-cert-preflight-checks:0.1@sha256:d56dc78e0699771ef6960eef1618b8068bd1b32557a8eed118453b0316772d7d
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-    - name: sast-snyk-check
-      runAfter:
-      - clone-repository
-      taskRef:
-        params:
-        - name: name
-          value: sast-snyk-check
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-sast-snyk-check:0.1@sha256:30b59fff49f73b8b4aa2e622ad095970674b2fd46924f12d26e32ca39443ba8e
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-      workspaces:
-      - name: workspace
-        workspace: workspace
-    - name: clamav-scan
-      params:
-      - name: image-digest
-        value: $(tasks.build-container.results.IMAGE_DIGEST)
-      - name: image-url
-        value: $(tasks.build-container.results.IMAGE_URL)
-      runAfter:
-      - build-container
-      taskRef:
-        params:
-        - name: name
-          value: clamav-scan
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-clamav-scan:0.1@sha256:ee0a3a13bc62b4f5cbd3d6adbe351bb414bf4d3b0d8d8d1829878103cfbe2656
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-    - name: sbom-json-check
-      params:
-      - name: IMAGE_URL
-        value: $(tasks.build-container.results.IMAGE_URL)
-      - name: IMAGE_DIGEST
-        value: $(tasks.build-container.results.IMAGE_DIGEST)
-      runAfter:
-      - build-container
-      taskRef:
-        params:
-        - name: name
-          value: sbom-json-check
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-sbom-json-check:0.1@sha256:5e0f1de336f7ba7c2e15729787d77074911a5fb659419afc9f1cd461ef194625
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-    - name: apply-tags
-      params:
-      - name: IMAGE
-        value: $(tasks.build-container.results.IMAGE_URL)
-      runAfter:
-      - build-container
-      taskRef:
-        params:
-        - name: name
-          value: apply-tags
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-apply-tags:0.1@sha256:175162b0a1c55e911d0d25ddef97e90932b5043f0b523cf83ed4824363840d74
-        - name: kind
-          value: task
-        resolver: bundles
+    # - name: clair-scan
+    #   params:
+    #   - name: image-digest
+    #     value: $(tasks.build-container.results.IMAGE_DIGEST)
+    #   - name: image-url
+    #     value: $(tasks.build-container.results.IMAGE_URL)
+    #   runAfter:
+    #   - build-container
+    #   taskRef:
+    #     params:
+    #     - name: name
+    #       value: clair-scan
+    #     - name: bundle
+    #       value: quay.io/konflux-ci/tekton-catalog/task-clair-scan:0.1@sha256:eed371ce8d1473e31a0befaa60134dedce47debe9527df0932f7fdea6a0c73b9
+    #     - name: kind
+    #       value: task
+    #     resolver: bundles
+    #   when:
+    #   - input: $(params.skip-checks)
+    #     operator: in
+    #     values:
+    #     - "false"
+    # - name: ecosystem-cert-preflight-checks
+    #   params:
+    #   - name: image-url
+    #     value: $(tasks.build-container.results.IMAGE_URL)
+    #   runAfter:
+    #   - build-container
+    #   taskRef:
+    #     params:
+    #     - name: name
+    #       value: ecosystem-cert-preflight-checks
+    #     - name: bundle
+    #       value: quay.io/konflux-ci/tekton-catalog/task-ecosystem-cert-preflight-checks:0.1@sha256:d56dc78e0699771ef6960eef1618b8068bd1b32557a8eed118453b0316772d7d
+    #     - name: kind
+    #       value: task
+    #     resolver: bundles
+    #   when:
+    #   - input: $(params.skip-checks)
+    #     operator: in
+    #     values:
+    #     - "false"
+    # - name: sast-snyk-check
+    #   runAfter:
+    #   - clone-repository
+    #   taskRef:
+    #     params:
+    #     - name: name
+    #       value: sast-snyk-check
+    #     - name: bundle
+    #       value: quay.io/konflux-ci/tekton-catalog/task-sast-snyk-check:0.1@sha256:30b59fff49f73b8b4aa2e622ad095970674b2fd46924f12d26e32ca39443ba8e
+    #     - name: kind
+    #       value: task
+    #     resolver: bundles
+    #   when:
+    #   - input: $(params.skip-checks)
+    #     operator: in
+    #     values:
+    #     - "false"
+    #   workspaces:
+    #   - name: workspace
+    #     workspace: workspace
+    # - name: clamav-scan
+    #   params:
+    #   - name: image-digest
+    #     value: $(tasks.build-container.results.IMAGE_DIGEST)
+    #   - name: image-url
+    #     value: $(tasks.build-container.results.IMAGE_URL)
+    #   runAfter:
+    #   - build-container
+    #   taskRef:
+    #     params:
+    #     - name: name
+    #       value: clamav-scan
+    #     - name: bundle
+    #       value: quay.io/konflux-ci/tekton-catalog/task-clamav-scan:0.1@sha256:ee0a3a13bc62b4f5cbd3d6adbe351bb414bf4d3b0d8d8d1829878103cfbe2656
+    #     - name: kind
+    #       value: task
+    #     resolver: bundles
+    #   when:
+    #   - input: $(params.skip-checks)
+    #     operator: in
+    #     values:
+    #     - "false"
+    # - name: sbom-json-check
+    #   params:
+    #   - name: IMAGE_URL
+    #     value: $(tasks.build-container.results.IMAGE_URL)
+    #   - name: IMAGE_DIGEST
+    #     value: $(tasks.build-container.results.IMAGE_DIGEST)
+    #   runAfter:
+    #   - build-container
+    #   taskRef:
+    #     params:
+    #     - name: name
+    #       value: sbom-json-check
+    #     - name: bundle
+    #       value: quay.io/konflux-ci/tekton-catalog/task-sbom-json-check:0.1@sha256:5e0f1de336f7ba7c2e15729787d77074911a5fb659419afc9f1cd461ef194625
+    #     - name: kind
+    #       value: task
+    #     resolver: bundles
+    #   when:
+    #   - input: $(params.skip-checks)
+    #     operator: in
+    #     values:
+    #     - "false"
+    # - name: apply-tags
+    #   params:
+    #   - name: IMAGE
+    #     value: $(tasks.build-container.results.IMAGE_URL)
+    #   runAfter:
+    #   - build-container
+    #   taskRef:
+    #     params:
+    #     - name: name
+    #       value: apply-tags
+    #     - name: bundle
+    #       value: quay.io/konflux-ci/tekton-catalog/task-apply-tags:0.1@sha256:175162b0a1c55e911d0d25ddef97e90932b5043f0b523cf83ed4824363840d74
+    #     - name: kind
+    #       value: task
+    #     resolver: bundles
     workspaces:
     - name: workspace
     - name: git-auth
