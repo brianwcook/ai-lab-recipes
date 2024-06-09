@@ -29,6 +29,7 @@ spec:
     value: "training/nvidia-bootc/argsfile.conf"
   pipelineRef:
       name: build-pipeline
-    - name: git-auth
-      secret:
-        secretName: '{{ git_auth_secret }}'
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: '{{ git_auth_secret }}'
