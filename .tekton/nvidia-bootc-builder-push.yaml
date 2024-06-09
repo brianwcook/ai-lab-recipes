@@ -207,7 +207,7 @@ spec:
         workspace: git-auth
 
 
-    - name: build-container
+    - name: "build-container"
         matrix:
           params:
           - name: BUILD_ARGS
@@ -255,7 +255,7 @@ spec:
           workspace: workspace
   
 
-  
+
       - name: build-index-image
         params:
           - name: IMAGE
