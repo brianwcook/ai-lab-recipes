@@ -69,7 +69,7 @@ spec:
       - name: build-args
         value:
         - ["platform=linux/arm64"]
-        - [""platform=linux/amd64"]
+        - ["platform=linux/amd64"]
     params:
     - description: Source Repository URL
       name: git-url
