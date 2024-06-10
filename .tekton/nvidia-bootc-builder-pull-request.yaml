@@ -180,8 +180,9 @@ spec:
         params:
           - name: BUILD_ARGS
             value:
-            - "platform=linux/arm64"
-            - "platform=linux/amd64"
+            -
+              - "platform=linux/arm64"
+              - "platform=linux/amd64"
       params:
       - name: IMAGE
         value: $(params.output-image)
