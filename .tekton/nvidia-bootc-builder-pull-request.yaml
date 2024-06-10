@@ -179,10 +179,7 @@ spec:
       matrix:
         params:
           - name: BUILD_ARGS
-            value:
-            -
-              - "platform=linux/arm64"
-              - "platform=linux/amd64"
+            value: $(params.platforms[*])
       params:
       - name: IMAGE
         value: $(params.output-image)
@@ -198,9 +195,10 @@ spec:
         value: $(params.image-expires-after)
       - name: COMMIT_SHA
         value: $(tasks.clone-repository.results.commit)
-      #- name: BUILD_ARGS
-      #  value:
-      #  - $(params.build-args[*])
+      - name: BUILD_ARGS
+        value:
+          - platform=linux/arm64
+          - platform=linux/amd64
       - name: BUILD_ARGS_FILE
         value: $(params.build-args-file)
       runAfter:
