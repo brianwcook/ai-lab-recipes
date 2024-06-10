@@ -179,7 +179,7 @@ spec:
       matrix:
         params:
           - name: BUILD_ARGS
-            value: $(params.platforms[*])
+            value: $(params.BUILD_ARGS[*])
       params:
       - name: IMAGE
         value: $(params.output-image)
