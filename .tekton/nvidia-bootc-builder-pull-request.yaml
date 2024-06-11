@@ -180,6 +180,7 @@ spec:
         params:
           - name: BUILD_ARGS
             value: $(params.BUILD_ARGS_2)
+            type: array
       params:
       - name: IMAGE
         value: $(params.output-image)
@@ -199,6 +200,7 @@ spec:
         value:
           - platform=linux/arm64
           - platform=linux/amd64
+        type: array
       - name: BUILD_ARGS_FILE
         value: $(params.build-args-file)
       runAfter:
